@@ -1,12 +1,14 @@
-import React from "react";
-import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import MainTabNavigator from "@/navigation/MainTabNavigator";
-import ModalScreen from "@/screens/ModalScreen";
-import { useScreenOptions } from "@/hooks/useScreenOptions";
+import React from 'react';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import MainTabNavigator from '@/navigation/MainTabNavigator';
+import ChatScreen from '@/screens/ChatScreen';
+import PeerInfoScreen from '@/screens/PeerInfoScreen';
+import { useScreenOptions } from '@/hooks/useScreenOptions';
 
 export type RootStackParamList = {
   Main: undefined;
-  Modal: undefined;
+  Chat: { peerId: string; peerName: string };
+  PeerInfo: { peerId: string; peerName: string };
 };
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
@@ -22,11 +24,17 @@ export default function RootStackNavigator() {
         options={{ headerShown: false }}
       />
       <Stack.Screen
-        name="Modal"
-        component={ModalScreen}
+        name="Chat"
+        component={ChatScreen}
         options={{
-          presentation: "modal",
-          headerTitle: "Modal",
+          headerTitle: 'Chat',
+        }}
+      />
+      <Stack.Screen
+        name="PeerInfo"
+        component={PeerInfoScreen}
+        options={{
+          headerTitle: 'Connection Info',
         }}
       />
     </Stack.Navigator>

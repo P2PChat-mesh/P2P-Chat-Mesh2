@@ -1,0 +1,302 @@
+import React, { useState, useEffect } from 'react';
+import { View, StyleSheet, TextInput, Switch, Pressable } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { useHeaderHeight } from '@react-navigation/elements';
+import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
+import { Feather } from '@expo/vector-icons';
+import * as Haptics from 'expo-haptics';
+
+import { KeyboardAwareScrollViewCompat } from '@/components/KeyboardAwareScrollViewCompat';
+import { ThemedText } from '@/components/ThemedText';
+import { Button } from '@/components/Button';
+import { useTheme } from '@/hooks/useTheme';
+import { useP2P } from '@/context/P2PContext';
+import { Spacing, BorderRadius } from '@/constants/theme';
+
+export default function SettingsScreen() {
+  const insets = useSafeAreaInsets();
+  const headerHeight = useHeaderHeight();
+  const tabBarHeight = useBottomTabBarHeight();
+  const { theme } = useTheme();
+  const { profile, updateProfile, isConnected } = useP2P();
+
+  const [displayName, setDisplayName] = useState(profile?.name || '');
+  const [notificationsEnabled, setNotificationsEnabled] = useState(true);
+  const [autoConnect, setAutoConnect] = useState(true);
+
+  useEffect(() => {
+    if (profile) {
+      setDisplayName(profile.name);
+    }
+  }, [profile]);
+
+  const handleSaveProfile = async () => {
+    if (displayName.trim()) {
+      await updateProfile(displayName.trim(), profile?.avatarIndex || 0);
+      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+    }
+  };
+
+  const handleToggleNotifications = (value: boolean) => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    setNotificationsEnabled(value);
+  };
+
+  const handleToggleAutoConnect = (value: boolean) => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    setAutoConnect(value);
+  };
+
+  return (
+    <KeyboardAwareScrollViewCompat
+      style={[styles.container, { backgroundColor: theme.backgroundRoot }]}
+      contentContainerStyle={{
+        paddingTop: headerHeight + Spacing.xl,
+        paddingBottom: tabBarHeight + Spacing.xl,
+        paddingHorizontal: Spacing.lg,
+      }}
+    >
+      <View style={[styles.section, { backgroundColor: theme.backgroundDefault }]}>
+        <ThemedText type="small" style={[styles.sectionLabel, { color: theme.textSecondary }]}>
+          PROFILE
+        </ThemedText>
+        
+        <View style={styles.avatarRow}>
+          <View style={[styles.avatar, { backgroundColor: theme.backgroundSecondary }]}>
+            <Feather name="user" size={32} color={theme.primary} />
+          </View>
+          <View style={styles.avatarInfo}>
+            <ThemedText type="body" style={{ fontWeight: '600' }}>
+              {displayName || 'Your Name'}
+            </ThemedText>
+            <ThemedText type="small" style={{ color: theme.textSecondary }}>
+              ID: {profile?.id.slice(0, 8) || '...'}
+            </ThemedText>
+          </View>
+        </View>
+        
+        <View style={[styles.divider, { backgroundColor: theme.border }]} />
+        
+        <ThemedText type="small" style={[styles.inputLabel, { color: theme.textSecondary }]}>
+          Display Name
+        </ThemedText>
+        <TextInput
+          value={displayName}
+          onChangeText={setDisplayName}
+          placeholder="Enter your name"
+          placeholderTextColor={theme.textSecondary}
+          style={[
+            styles.input,
+            {
+              backgroundColor: theme.backgroundSecondary,
+              color: theme.text,
+              borderColor: theme.border,
+            },
+          ]}
+          maxLength={30}
+          testID="display-name-input"
+        />
+        
+        <Button onPress={handleSaveProfile} style={styles.saveButton}>
+          Save Profile
+        </Button>
+      </View>
+
+      <View style={[styles.section, { backgroundColor: theme.backgroundDefault }]}>
+        <ThemedText type="small" style={[styles.sectionLabel, { color: theme.textSecondary }]}>
+          PREFERENCES
+        </ThemedText>
+        
+        <View style={styles.settingRow}>
+          <View style={styles.settingInfo}>
+            <Feather name="bell" size={18} color={theme.primary} />
+            <ThemedText type="body" style={styles.settingLabel}>Notifications</ThemedText>
+          </View>
+          <Switch
+            value={notificationsEnabled}
+            onValueChange={handleToggleNotifications}
+            trackColor={{ false: theme.backgroundSecondary, true: theme.primary }}
+            thumbColor="#FFFFFF"
+            testID="notifications-toggle"
+          />
+        </View>
+        
+        <View style={[styles.divider, { backgroundColor: theme.border }]} />
+        
+        <View style={styles.settingRow}>
+          <View style={styles.settingInfo}>
+            <Feather name="wifi" size={18} color={theme.primary} />
+            <ThemedText type="body" style={styles.settingLabel}>Auto-connect to known peers</ThemedText>
+          </View>
+          <Switch
+            value={autoConnect}
+            onValueChange={handleToggleAutoConnect}
+            trackColor={{ false: theme.backgroundSecondary, true: theme.primary }}
+            thumbColor="#FFFFFF"
+            testID="auto-connect-toggle"
+          />
+        </View>
+      </View>
+
+      <View style={[styles.section, { backgroundColor: theme.backgroundDefault }]}>
+        <ThemedText type="small" style={[styles.sectionLabel, { color: theme.textSecondary }]}>
+          ABOUT
+        </ThemedText>
+        
+        <View style={styles.aboutContent}>
+          <View style={styles.aboutHeader}>
+            <Feather name="shield" size={32} color={theme.primary} />
+            <ThemedText type="h4" style={styles.aboutTitle}>How P2P Works</ThemedText>
+          </View>
+          
+          <ThemedText type="body" style={[styles.aboutText, { color: theme.textSecondary }]}>
+            MeshChat creates direct connections between devices without storing any messages on servers.
+          </ThemedText>
+          
+          <View style={styles.featureList}>
+            <View style={styles.featureItem}>
+              <View style={[styles.featureDot, { backgroundColor: theme.primary }]} />
+              <ThemedText type="small" style={{ color: theme.textSecondary }}>
+                Messages exist only on connected devices
+              </ThemedText>
+            </View>
+            <View style={styles.featureItem}>
+              <View style={[styles.featureDot, { backgroundColor: theme.primary }]} />
+              <ThemedText type="small" style={{ color: theme.textSecondary }}>
+                No cloud storage, no backups, no traces
+              </ThemedText>
+            </View>
+            <View style={styles.featureItem}>
+              <View style={[styles.featureDot, { backgroundColor: theme.primary }]} />
+              <ThemedText type="small" style={{ color: theme.textSecondary }}>
+                True peer-to-peer encrypted communication
+              </ThemedText>
+            </View>
+          </View>
+        </View>
+      </View>
+
+      <View style={styles.footer}>
+        <View style={styles.connectionStatus}>
+          <View 
+            style={[
+              styles.statusDot, 
+              { backgroundColor: isConnected ? theme.primary : theme.error }
+            ]} 
+          />
+          <ThemedText type="small" style={{ color: theme.textSecondary }}>
+            {isConnected ? 'Network connected' : 'Disconnected'}
+          </ThemedText>
+        </View>
+        <ThemedText type="small" style={{ color: theme.textSecondary }}>
+          MeshChat v1.0.0
+        </ThemedText>
+      </View>
+    </KeyboardAwareScrollViewCompat>
+  );
+}
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
+  section: {
+    borderRadius: BorderRadius.sm,
+    padding: Spacing.lg,
+    marginBottom: Spacing.lg,
+  },
+  sectionLabel: {
+    fontSize: 11,
+    fontWeight: '600',
+    letterSpacing: 0.5,
+    marginBottom: Spacing.lg,
+  },
+  avatarRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: Spacing.lg,
+  },
+  avatar: {
+    width: 60,
+    height: 60,
+    borderRadius: 30,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginRight: Spacing.lg,
+  },
+  avatarInfo: {
+    flex: 1,
+  },
+  divider: {
+    height: 1,
+    marginVertical: Spacing.lg,
+  },
+  inputLabel: {
+    marginBottom: Spacing.sm,
+  },
+  input: {
+    height: 48,
+    borderRadius: BorderRadius.xs,
+    paddingHorizontal: Spacing.lg,
+    fontSize: 16,
+    borderWidth: 1,
+    marginBottom: Spacing.lg,
+  },
+  saveButton: {
+    marginTop: Spacing.xs,
+  },
+  settingRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  settingInfo: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    flex: 1,
+  },
+  settingLabel: {
+    marginLeft: Spacing.md,
+  },
+  aboutContent: {},
+  aboutHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: Spacing.lg,
+  },
+  aboutTitle: {
+    marginLeft: Spacing.md,
+  },
+  aboutText: {
+    lineHeight: 22,
+    marginBottom: Spacing.lg,
+  },
+  featureList: {
+    gap: Spacing.sm,
+  },
+  featureItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  featureDot: {
+    width: 6,
+    height: 6,
+    borderRadius: 3,
+    marginRight: Spacing.sm,
+  },
+  footer: {
+    alignItems: 'center',
+    paddingTop: Spacing.xl,
+  },
+  connectionStatus: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: Spacing.sm,
+  },
+  statusDot: {
+    width: 8,
+    height: 8,
+    borderRadius: 4,
+    marginRight: Spacing.sm,
+  },
+});
