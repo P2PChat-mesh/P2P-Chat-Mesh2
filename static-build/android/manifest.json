@@ -1,0 +1,101 @@
+{
+  "id": "1b928fdd-5360-4302-9106-c536adfb8ef2",
+  "createdAt": "2026-01-24T21:35:32.840Z",
+  "runtimeVersion": "exposdk:54.0.0",
+  "launchAsset": {
+    "key": "bundle-1769290532840-2605",
+    "contentType": "application/javascript",
+    "url": "https://165be3e6-bbbd-4fa5-b16e-e99043c9c277-00-23dgf717xpj2h.kirk.replit.dev/1769290532840-2605/_expo/static/js/android/bundle.js"
+  },
+  "assets": [],
+  "metadata": {},
+  "extra": {
+    "eas": {},
+    "expoClient": {
+      "name": "MeshChat",
+      "slug": "meshchat",
+      "version": "1.0.0",
+      "orientation": "portrait",
+      "icon": "./assets/images/icon.png",
+      "scheme": "meshchat",
+      "userInterfaceStyle": "dark",
+      "newArchEnabled": true,
+      "ios": {
+        "supportsTablet": true,
+        "bundleIdentifier": "com.meshchat.app"
+      },
+      "android": {
+        "adaptiveIcon": {
+          "backgroundColor": "#0A0A0A",
+          "foregroundImage": "./assets/images/icon.png",
+          "foregroundImageUrl": "https://165be3e6-bbbd-4fa5-b16e-e99043c9c277-00-23dgf717xpj2h.kirk.replit.dev/assets/./assets/images/icon.png"
+        },
+        "edgeToEdgeEnabled": true,
+        "predictiveBackGestureEnabled": false,
+        "package": "com.meshchat.app"
+      },
+      "web": {
+        "output": "single",
+        "favicon": "./assets/images/favicon.png"
+      },
+      "plugins": [
+        [
+          "expo-splash-screen",
+          {
+            "image": "./assets/images/splash-icon.png",
+            "imageWidth": 200,
+            "resizeMode": "contain",
+            "backgroundColor": "#0A0A0A",
+            "dark": {
+              "backgroundColor": "#0A0A0A"
+            }
+          }
+        ],
+        "expo-web-browser"
+      ],
+      "experiments": {
+        "reactCompiler": true
+      },
+      "_internal": {
+        "isDebug": false,
+        "projectRoot": "/home/runner/workspace",
+        "dynamicConfigPath": {},
+        "staticConfigPath": "/home/runner/workspace/app.json",
+        "packageJsonPath": "/home/runner/workspace/package.json",
+        "pluginHistory": {
+          "expo-splash-screen": {
+            "name": "expo-splash-screen",
+            "version": "31.0.11"
+          },
+          "expo-web-browser": {
+            "name": "expo-web-browser",
+            "version": "15.0.9"
+          }
+        }
+      },
+      "sdkVersion": "54.0.0",
+      "platforms": [
+        "ios",
+        "android",
+        "web"
+      ],
+      "androidStatusBar": {
+        "backgroundColor": "#0A0A0A"
+      },
+      "iconUrl": "https://165be3e6-bbbd-4fa5-b16e-e99043c9c277-00-23dgf717xpj2h.kirk.replit.dev/assets/./assets/images/icon.png",
+      "hostUri": "165be3e6-bbbd-4fa5-b16e-e99043c9c277-00-23dgf717xpj2h.kirk.replit.dev/android"
+    },
+    "expoGo": {
+      "debuggerHost": "165be3e6-bbbd-4fa5-b16e-e99043c9c277-00-23dgf717xpj2h.kirk.replit.dev/android",
+      "developer": {
+        "tool": "expo-cli",
+        "projectRoot": "/home/runner/workspace"
+      },
+      "packagerOpts": {
+        "dev": false
+      },
+      "mainModuleName": "client/index"
+    },
+    "scopeKey": "@anonymous/meshchat-0784490e-f86f-4b1d-8b58-beb23e60ce0f"
+  }
+}

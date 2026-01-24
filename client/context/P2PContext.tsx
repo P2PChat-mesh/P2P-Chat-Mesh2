@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useEffect, useCallback, useRef } from 'react';
+import React, { createContext, useContext, useState, useEffect, useCallback, useRef, useMemo } from 'react';
 import * as Haptics from 'expo-haptics';
 import type { Peer, Chat, Message, UserProfile } from '@/types';
 import { 
@@ -40,9 +40,17 @@ export function P2PProvider({ children }: { children: React.ReactNode }) {
   const [isConnected, setIsConnected] = useState(false);
   const wsRef = useRef<WebSocket | null>(null);
   const reconnectTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const profileRef = useRef<UserProfile | null>(null);
+  const peersRef = useRef<Peer[]>([]);
+  const chatsRef = useRef<Chat[]>([]);
+
+  profileRef.current = profile;
+  peersRef.current = peers;
+  chatsRef.current = chats;
 
   const connectWebSocket = useCallback(() => {
     if (wsRef.current?.readyState === WebSocket.OPEN) return;
+    if (wsRef.current?.readyState === WebSocket.CONNECTING) return;
 
     try {
       const baseUrl = getApiUrl();
@@ -51,18 +59,20 @@ export function P2PProvider({ children }: { children: React.ReactNode }) {
 
       ws.onopen = () => {
         setIsConnected(true);
-        if (profile) {
-          ws.send(JSON.stringify({ type: 'register', profile }));
+        const currentProfile = profileRef.current;
+        if (currentProfile) {
+          ws.send(JSON.stringify({ type: 'register', profile: currentProfile }));
         }
       };
 
       ws.onmessage = async (event) => {
         try {
           const data = JSON.parse(event.data);
+          const currentProfile = profileRef.current;
           
           switch (data.type) {
             case 'peers':
-              setPeers(data.peers.filter((p: Peer) => p.id !== profile?.id));
+              setPeers(data.peers.filter((p: Peer) => p.id !== currentProfile?.id));
               break;
             case 'message':
               const newMessage: Message = {
@@ -119,7 +129,7 @@ export function P2PProvider({ children }: { children: React.ReactNode }) {
       console.error('WebSocket connection error:', e);
       reconnectTimeoutRef.current = setTimeout(connectWebSocket, 3000);
     }
-  }, [profile]);
+  }, []);
 
   useEffect(() => {
     const init = async () => {
@@ -148,34 +158,48 @@ export function P2PProvider({ children }: { children: React.ReactNode }) {
       if (reconnectTimeoutRef.current) {
         clearTimeout(reconnectTimeoutRef.current);
       }
-      wsRef.current?.close();
+      if (wsRef.current) {
+        wsRef.current.onclose = null;
+        wsRef.current.close();
+      }
     };
   }, [profile, connectWebSocket]);
 
-  const updateProfile = async (name: string, avatarIndex: number) => {
-    if (!profile) return;
-    const updated = { ...profile, name, avatarIndex };
+  const updateProfile = useCallback(async (name: string, avatarIndex: number) => {
+    const currentProfile = profileRef.current;
+    if (!currentProfile) return;
+    const updated = { ...currentProfile, name, avatarIndex };
     await saveUserProfile(updated);
     setProfile(updated);
-    wsRef.current?.send(JSON.stringify({ type: 'register', profile: updated }));
-  };
+    if (wsRef.current?.readyState === WebSocket.OPEN) {
+      wsRef.current.send(JSON.stringify({ type: 'register', profile: updated }));
+    }
+  }, []);
 
-  const startScanning = () => {
+  const startScanning = useCallback(() => {
     setIsScanning(true);
-    wsRef.current?.send(JSON.stringify({ type: 'scan' }));
-  };
+    if (wsRef.current?.readyState === WebSocket.OPEN) {
+      wsRef.current.send(JSON.stringify({ type: 'scan' }));
+    }
+  }, []);
 
-  const stopScanning = () => {
+  const stopScanning = useCallback(() => {
     setIsScanning(false);
-  };
+  }, []);
 
-  const connectToPeer = async (peer: Peer) => {
-    wsRef.current?.send(JSON.stringify({ type: 'connect', peerId: peer.id }));
+  const connectToPeer = useCallback(async (peer: Peer) => {
+    if (wsRef.current?.readyState === WebSocket.OPEN) {
+      wsRef.current.send(JSON.stringify({ type: 'connect', peerId: peer.id }));
+    }
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
-  };
+  }, []);
 
-  const sendMessage = async (peerId: string, content: string) => {
-    if (!profile || !content.trim()) return;
+  const sendMessage = useCallback(async (peerId: string, content: string) => {
+    const currentProfile = profileRef.current;
+    const currentPeers = peersRef.current;
+    const currentChats = chatsRef.current;
+    
+    if (!currentProfile || !content.trim()) return;
     
     const message: Message = {
       id: generateId(),
@@ -186,60 +210,78 @@ export function P2PProvider({ children }: { children: React.ReactNode }) {
       status: 'sending',
     };
 
-    const peer = peers.find(p => p.id === peerId);
-    const peerName = peer?.name || chats.find(c => c.peerId === peerId)?.peerName || 'Unknown';
+    const peer = currentPeers.find(p => p.id === peerId);
+    const peerName = peer?.name || currentChats.find(c => c.peerId === peerId)?.peerName || 'Unknown';
     
     const updatedChats = await addMessageToChat(peerId, peerName, message);
     setChats(updatedChats);
     
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
 
-    wsRef.current?.send(JSON.stringify({
-      type: 'message',
-      to: peerId,
-      content: content.trim(),
-      from: profile,
-    }));
+    if (wsRef.current?.readyState === WebSocket.OPEN) {
+      wsRef.current.send(JSON.stringify({
+        type: 'message',
+        to: peerId,
+        content: content.trim(),
+        from: currentProfile,
+      }));
+    }
 
     message.status = 'sent';
     const finalChats = await addMessageToChat(peerId, peerName, { ...message, status: 'sent' });
     setChats(finalChats);
-  };
+  }, []);
 
-  const markAsRead = async (peerId: string) => {
+  const markAsRead = useCallback(async (peerId: string) => {
     await markChatAsRead(peerId);
     setChats(prev => prev.map(c =>
       c.peerId === peerId ? { ...c, unreadCount: 0 } : c
     ));
-  };
+  }, []);
 
-  const deleteChatHandler = async (peerId: string) => {
+  const deleteChatHandler = useCallback(async (peerId: string) => {
     const updated = await deleteStoredChat(peerId);
     setChats(updated);
     Haptics.notificationAsync(Haptics.NotificationFeedbackType.Warning);
-  };
+  }, []);
 
-  const refreshChats = async () => {
+  const refreshChats = useCallback(async () => {
     const storedChats = await getChats();
     setChats(storedChats);
-  };
+  }, []);
+
+  const value = useMemo(() => ({
+    profile,
+    peers,
+    chats,
+    isScanning,
+    isConnected,
+    updateProfile,
+    startScanning,
+    stopScanning,
+    connectToPeer,
+    sendMessage,
+    markAsRead,
+    deleteChat: deleteChatHandler,
+    refreshChats,
+  }), [
+    profile,
+    peers,
+    chats,
+    isScanning,
+    isConnected,
+    updateProfile,
+    startScanning,
+    stopScanning,
+    connectToPeer,
+    sendMessage,
+    markAsRead,
+    deleteChatHandler,
+    refreshChats,
+  ]);
 
   return (
-    <P2PContext.Provider value={{
-      profile,
-      peers,
-      chats,
-      isScanning,
-      isConnected,
-      updateProfile,
-      startScanning,
-      stopScanning,
-      connectToPeer,
-      sendMessage,
-      markAsRead,
-      deleteChat: deleteChatHandler,
-      refreshChats,
-    }}>
+    <P2PContext.Provider value={value}>
       {children}
     </P2PContext.Provider>
   );

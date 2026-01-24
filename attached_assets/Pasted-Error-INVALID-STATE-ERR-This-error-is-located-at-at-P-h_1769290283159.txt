@@ -1,0 +1,301 @@
+Error: INVALID_STATE_ERR
+
+This error is located at:
+    at P (https://p-2-p-whisper--carlovandenbor.replit.app/1769289511165-68/_expo/static/js/ios/bundle.js:1473:879)
+    at anonymous (https://p-2-p-whisper--carlovandenbor.replit.app/1769289511165-68/_expo/static/js/ios/bundle.js:695:455)
+    at anonymous (https://p-2-p-whisper--carlovandenbor.replit.app/1769289511165-68/_expo/static/js/ios/bundle.js:626:230)
+    at anonymous (https://p-2-p-whisper--carlovandenbor.replit.app/1769289511165-68/_expo/static/js/ios/bundle.js:693:184)
+    at RNSScreenContentWrapper (<anonymous>)
+    at l (<anonymous>)
+    at u (<anonymous>)
+    at RNSScreen (<anonymous>)
+    at Animated(Anonymous) (https://p-2-p-whisper--carlovandenbor.replit.app/1769289511165-68/_expo/static/js/ios/bundle.js:400:466)
+    at t (https://p-2-p-whisper--carlovandenbor.replit.app/1769289511165-68/_expo/static/js/ios/bundle.js:1331:329)
+    at Suspense (<anonymous>)
+    at anonymous (https://p-2-p-whisper--carlovandenbor.replit.app/1769289511165-68/_expo/static/js/ios/bundle.js:1331:119)
+    at c (https://p-2-p-whisper--carlovandenbor.replit.app/1769289511165-68/_expo/static/js/ios/bundle.js:1330:296)
+    at anonymous (https://p-2-p-whisper--carlovandenbor.replit.app/1769289511165-68/_expo/static/js/ios/bundle.js:1328:894)
+    at anonymous (https://p-2-p-whisper--carlovandenbor.replit.app/1769289511165-68/_expo/static/js/ios/bundle.js:1328:4288)
+    at y (https://p-2-p-whisper--carlovandenbor.replit.app/1769289511165-68/_expo/static/js/ios/bundle.js:1350:790)
+    at S (https://p-2-p-whisper--carlovandenbor.replit.app/1769289511165-68/_expo/static/js/ios/bundle.js:1254:2450)
+    at RNSScreenStack (<anonymous>)
+    at anonymous (https://p-2-p-whisper--carlovandenbor.replit.app/1769289511165-68/_expo/static/js/ios/bundle.js:1347:400)
+    at G (https://p-2-p-whisper--carlovandenbor.replit.app/1769289511165-68/_expo/static/js/ios/bundle.js:1346:831)
+    at RCTView (<anonymous>)
+    at View (https://p-2-p-whisper--carlovandenbor.replit.app/1769289511165-68/_expo/static/js/ios/bundle.js:137:1246)
+    at anonymous (https://p-2-p-whisper--carlovandenbor.replit.app/1769289511165-68/_expo/static/js/ios/bundle.js:1299:379)
+    at v (https://p-2-p-whisper--carlovandenbor.replit.app/1769289511165-68/_expo/static/js/ios/bundle.js:1317:650)
+    at anonymous (https://p-2-p-whisper--carlovandenbor.replit.app/1769289511165-68/_expo/static/js/ios/bundle.js:1254:132)
+    at anonymous (https://p-2-p-whisper--carlovandenbor.replit.app/1769289511165-68/_expo/static/js/ios/bundle.js:667:189)
+    at anonymous (https://p-2-p-whisper--carlovandenbor.replit.app/1769289511165-68/_expo/static/js/ios/bundle.js:701:390)
+    at t (https://p-2-p-whisper--carlovandenbor.replit.app/1769289511165-68/_expo/static/js/ios/bundle.js:690:696)
+    at anonymous (https://p-2-p-whisper--carlovandenbor.replit.app/1769289511165-68/_expo/static/js/ios/bundle.js:690:227)
+    at l (https://p-2-p-whisper--carlovandenbor.replit.app/1769289511165-68/_expo/static/js/ios/bundle.js:1253:687)
+    at f (https://p-2-p-whisper--carlovandenbor.replit.app/1769289511165-68/_expo/static/js/ios/bundle.js:1472:348)
+    at anonymous (https://p-2-p-whisper--carlovandenbor.replit.app/1769289511165-68/_expo/static/js/ios/bundle.js:695:455)
+    at anonymous (https://p-2-p-whisper--carlovandenbor.replit.app/1769289511165-68/_expo/static/js/ios/bundle.js:626:230)
+    at anonymous (https://p-2-p-whisper--carlovandenbor.replit.app/1769289511165-68/_expo/static/js/ios/bundle.js:693:184)
+    at RCTView (<anonymous>)
+    at View (https://p-2-p-whisper--carlovandenbor.replit.app/1769289511165-68/_expo/static/js/ios/bundle.js:137:1246)
+    at RCTView (<anonymous>)
+    at View (https://p-2-p-whisper--carlovandenbor.replit.app/1769289511165-68/_expo/static/js/ios/bundle.js:137:1246)
+    at Animated(View) (https://p-2-p-whisper--carlovandenbor.replit.app/1769289511165-68/_expo/static/js/ios/bundle.js:400:466)
+    at anonymous (https://p-2-p-whisper--carlovandenbor.replit.app/1769289511165-68/_expo/static/js/ios/bundle.js:1261:142)
+    at anonymous (https://p-2-p-whisper--carlovandenbor.replit.app/1769289511165-68/_expo/static/js/ios/bundle.js:1318:145)
+    at RNSScreen (<anonymous>)
+    at Animated(Anonymous) (https://p-2-p-whisper--carlovandenbor.replit.app/1769289511165-68/_expo/static/js/ios/bundle.js:400:466)
+    at t (https://p-2-p-whisper--carlovandenbor.replit.app/1769289511165-68/_expo/static/js/ios/bundle.js:1331:329)
+    at Suspense (<anonymous>)
+    at anonymous (https://p-2-p-whisper--carlovandenbor.replit.app/1769289511165-68/_expo/static/js/ios/bundle.js:1331:119)
+    at c (https://p-2-p-whisper--carlovandenbor.replit.app/1769289511165-68/_expo/static/js/ios/bundle.js:1330:296)
+    at anonymous (https://p-2-p-whisper--carlovandenbor.replit.app/1769289511165-68/_expo/static/js/ios/bundle.js:1328:894)
+    at anonymous (https://p-2-p-whisper--carlovandenbor.replit.app/1769289511165-68/_expo/static/js/ios/bundle.js:1328:4288)
+    at anonymous (https://p-2-p-whisper--carlovandenbor.replit.app/1769289511165-68/_expo/static/js/ios/bundle.js:1394:260)
+    at RNSScreenNavigationContainer (<anonymous>)
+    at c (https://p-2-p-whisper--carlovandenbor.replit.app/1769289511165-68/_expo/static/js/ios/bundle.js:1343:364)
+    at v (https://p-2-p-whisper--carlovandenbor.replit.app/1769289511165-68/_expo/static/js/ios/bundle.js:1394:636)
+    at RCTView (<anonymous>)
+    at View (https://p-2-p-whisper--carlovandenbor.replit.app/1769289511165-68/_expo/static/js/ios/bundle.js:137:1246)
+    at anonymous (https://p-2-p-whisper--carlovandenbor.replit.app/1769289511165-68/_expo/static/js/ios/bundle.js:1299:379)
+    at v (https://p-2-p-whisper--carlovandenbor.replit.app/1769289511165-68/_expo/static/js/ios/bundle.js:1317:650)
+    at anonymous (https://p-2-p-whisper--carlovandenbor.replit.app/1769289511165-68/_expo/static/js/ios/bundle.js:1386:181)
+    at anonymous (https://p-2-p-whisper--carlovandenbor.replit.app/1769289511165-68/_expo/static/js/ios/bundle.js:667:189)
+    at anonymous (https://p-2-p-whisper--carlovandenbor.replit.app/1769289511165-68/_expo/static/js/ios/bundle.js:701:390)
+    at t (https://p-2-p-whisper--carlovandenbor.replit.app/1769289511165-68/_expo/static/js/ios/bundle.js:690:696)
+    at anonymous (https://p-2-p-whisper--carlovandenbor.replit.app/1769289511165-68/_expo/static/js/ios/bundle.js:690:227)
+    at l (https://p-2-p-whisper--carlovandenbor.replit.app/1769289511165-68/_expo/static/js/ios/bundle.js:1385:448)
+    at h (https://p-2-p-whisper--carlovandenbor.replit.app/1769289511165-68/_expo/static/js/ios/bundle.js:1380:411)
+    at anonymous (https://p-2-p-whisper--carlovandenbor.replit.app/1769289511165-68/_expo/static/js/ios/bundle.js:695:455)
+    at anonymous (https://p-2-p-whisper--carlovandenbor.replit.app/1769289511165-68/_expo/static/js/ios/bundle.js:626:230)
+    at anonymous (https://p-2-p-whisper--carlovandenbor.replit.app/1769289511165-68/_expo/static/js/ios/bundle.js:693:184)
+    at RNSScreenContentWrapper (<anonymous>)
+    at l (<anonymous>)
+    at u (<anonymous>)
+    at RNSScreen (<anonymous>)
+    at Animated(Anonymous) (https://p-2-p-whisper--carlovandenbor.replit.app/1769289511165-68/_expo/static/js/ios/bundle.js:400:466)
+    at t (https://p-2-p-whisper--carlovandenbor.replit.app/1769289511165-68/_expo/static/js/ios/bundle.js:1331:329)
+    at Suspense (<anonymous>)
+    at anonymous (https://p-2-p-whisper--carlovandenbor.replit.app/1769289511165-68/_expo/static/js/ios/bundle.js:1331:119)
+    at c (https://p-2-p-whisper--carlovandenbor.replit.app/1769289511165-68/_expo/static/js/ios/bundle.js:1330:296)
+    at anonymous (https://p-2-p-whisper--carlovandenbor.replit.app/1769289511165-68/_expo/static/js/ios/bundle.js:1328:894)
+    at anonymous (https://p-2-p-whisper--carlovandenbor.replit.app/1769289511165-68/_expo/static/js/ios/bundle.js:1328:4288)
+    at y (https://p-2-p-whisper--carlovandenbor.replit.app/1769289511165-68/_expo/static/js/ios/bundle.js:1350:790)
+    at S (https://p-2-p-whisper--carlovandenbor.replit.app/1769289511165-68/_expo/static/js/ios/bundle.js:1254:2450)
+    at RNSScreenStack (<anonymous>)
+    at anonymous (https://p-2-p-whisper--carlovandenbor.replit.app/1769289511165-68/_expo/static/js/ios/bundle.js:1347:400)
+    at G (https://p-2-p-whisper--carlovandenbor.replit.app/1769289511165-68/_expo/static/js/ios/bundle.js:1346:831)
+    at RCTView (<anonymous>)
+    at View (https://p-2-p-whisper--carlovandenbor.replit.app/1769289511165-68/_expo/static/js/ios/bundle.js:137:1246)
+    at anonymous (https://p-2-p-whisper--carlovandenbor.replit.app/1769289511165-68/_expo/static/js/ios/bundle.js:1299:379)
+    at v (https://p-2-p-whisper--carlovandenbor.replit.app/1769289511165-68/_expo/static/js/ios/bundle.js:1317:650)
+    at anonymous (https://p-2-p-whisper--carlovandenbor.replit.app/1769289511165-68/_expo/static/js/ios/bundle.js:1254:132)
+    at anonymous (https://p-2-p-whisper--carlovandenbor.replit.app/1769289511165-68/_expo/static/js/ios/bundle.js:667:189)
+    at anonymous (https://p-2-p-whisper--carlovandenbor.replit.app/1769289511165-68/_expo/static/js/ios/bundle.js:701:390)
+    at t (https://p-2-p-whisper--carlovandenbor.replit.app/1769289511165-68/_expo/static/js/ios/bundle.js:690:696)
+    at anonymous (https://p-2-p-whisper--carlovandenbor.replit.app/1769289511165-68/_expo/static/js/ios/bundle.js:690:227)
+    at l (https://p-2-p-whisper--carlovandenbor.replit.app/1769289511165-68/_expo/static/js/ios/bundle.js:1253:687)
+    at l (https://p-2-p-whisper--carlovandenbor.replit.app/1769289511165-68/_expo/static/js/ios/bundle.js:1251:380)
+    at anonymous (https://p-2-p-whisper--carlovandenbor.replit.app/1769289511165-68/_expo/static/js/ios/bundle.js:632:126)
+    at anonymous (https://p-2-p-whisper--carlovandenbor.replit.app/1769289511165-68/_expo/static/js/ios/bundle.js:626:230)
+    at anonymous (https://p-2-p-whisper--carlovandenbor.replit.app/1769289511165-68/_expo/static/js/ios/bundle.js:609:10
+
+value
+    bundle.js:280:1946
+startScanning
+    bundle.js:1486:4449
+anonymous
+    bundle.js:1473:1128
+zi
+    bundle.js:222:87224
+Ki
+    bundle.js:222:94770
+Ji
+    bundle.js:222:94654
+Ki
+    bundle.js:222:94750
+Ji
+    bundle.js:222:94654
+Ki
+    bundle.js:222:94807
+Ji
+    bundle.js:222:94654
+Ki
+    bundle.js:222:94807
+Ji
+    bundle.js:222:94654
+Ki
+    bundle.js:222:94750
+Ji
+    bundle.js:222:94654
+Ki
+    bundle.js:222:94807
+Ji
+    bundle.js:222:94654
+Ki
+    bundle.js:222:94807
+Ji
+    bundle.js:222:94654
+Ki
+    bundle.js:222:94750
+Ji
+    bundle.js:222:94654
+Ki
+    bundle.js:222:94807
+Ji
+    bundle.js:222:94654
+Ki
+    bundle.js:222:94807
+Ji
+    bundle.js:222:94654
+Ki
+    bundle.js:222:94807
+Ji
+    bundle.js:222:94654
+Ki
+    bundle.js:222:94807
+Ji
+    bundle.js:222:94654
+Ki
+    bundle.js:222:94807
+Ji
+    bundle.js:222:94654
+Ki
+    bundle.js:222:94807
+Ji
+    bundle.js:222:94654
+Ki
+    bundle.js:222:94807
+Ji
+    bundle.js:222:94654
+Ki
+    bundle.js:222:94807
+Ji
+    bundle.js:222:94654
+Ki
+    bundle.js:222:94750
+Ji
+    bundle.js:222:94654
+Ki
+    bundle.js:222:94750
+Ji
+    bundle.js:222:94654
+Ki
+    bundle.js:222:94807
+Ji
+    bundle.js:222:94654
+Ki
+    bundle.js:222:94807
+Ji
+    bundle.js:222:94654
+Ki
+    bundle.js:222:94750
+Ji
+    bundle.js:222:94654
+Ki
+    bundle.js:222:94750
+Ji
+    bundle.js:222:94654
+Ki
+    bundle.js:222:95384
+Ji
+    bundle.js:222:94654
+Ji
+    bundle.js:222:94654
+Ki
+    bundle.js:222:94807
+Ji
+    bundle.js:222:94654
+Ki
+    bundle.js:222:94750
+Ji
+    bundle.js:222:94654
+Ki
+    bundle.js:222:94807
+Ji
+    bundle.js:222:94654
+Ki
+    bundle.js:222:94750
+Ji
+    bundle.js:222:94654
+Ki
+    bundle.js:222:94807
+Ji
+    bundle.js:222:94654
+Ki
+    bundle.js:222:94750
+Ji
+    bundle.js:222:94654
+Ki
+    bundle.js:222:94807
+Ji
+    bundle.js:222:94654
+Ki
+    bundle.js:222:94807
+Ji
+    bundle.js:222:94654
+Ki
+    bundle.js:222:94807
+Ji
+    bundle.js:222:94654
+Ki
+    bundle.js:222:94750
+Ji
+    bundle.js:222:94654
+Ki
+    bundle.js:222:94807
+Ji
+    bundle.js:222:94654
+Ki
+    bundle.js:222:94750
+Ji
+    bundle.js:222:94654
+Ki
+    bundle.js:222:94807
+Ji
+    bundle.js:222:94654
+Ki
+    bundle.js:222:94750
+Ji
+    bundle.js:222:94654
+Ki
+    bundle.js:222:94807
+Ji
+    bundle.js:222:94654
+Ki
+    bundle.js:222:94750
+Ji
+    bundle.js:222:94654
+Ki
+    bundle.js:222:94807
+Ji
+    bundle.js:222:94654
+Ki
+    bundle.js:222:94750
+Ji
+    bundle.js:222:94654
+Ki
+    bundle.js:222:94807
+Ji
+    bundle.js:222:94654
+Ki
+    bundle.js:222:94832
+bo
+    bundle.js:222:106178
+vo
+    bundle.js:222:105914
+mo
+    bundle.js:222:105694
+fo
+    bundle.js:222:104806
+qu
+    bundle.js:222:99858
+$u
+    bundle.js:222:99697
+Ht
+    bundle.js:222:29381
+Dt
+    bundle.js:222:27999
+jt
+    bundle.js:222:28235
+anonymous
+    bundle.js:222:27608

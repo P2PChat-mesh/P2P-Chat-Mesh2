@@ -36,9 +36,16 @@ export default function PeerDiscoveryScreen() {
   const fabScale = useSharedValue(1);
 
   useEffect(() => {
-    startScanning();
-    return () => stopScanning();
-  }, [startScanning, stopScanning]);
+    if (isConnected) {
+      startScanning();
+    }
+  }, [isConnected, startScanning]);
+
+  useEffect(() => {
+    return () => {
+      stopScanning();
+    };
+  }, [stopScanning]);
 
   const handleConnectPeer = async (peer: Peer) => {
     await connectToPeer(peer);
