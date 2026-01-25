@@ -138,6 +138,36 @@ export async function registerRoutes(app: Express): Promise<Server> {
             }
             break;
           }
+
+          case 'messages_read': {
+            const targetId = message.to;
+            const targetClient = connectedClients.get(targetId);
+            
+            if (targetClient && targetClient.ws.readyState === WebSocket.OPEN) {
+              targetClient.ws.send(JSON.stringify({
+                type: 'messages_read',
+                from: clientId,
+                messageIds: message.messageIds,
+                autoDeleteAt: message.autoDeleteAt,
+              }));
+              console.log(`Read receipt sent from ${clientId} to ${targetId}`);
+            }
+            break;
+          }
+
+          case 'delete_chat': {
+            const targetId = message.to;
+            const targetClient = connectedClients.get(targetId);
+            
+            if (targetClient && targetClient.ws.readyState === WebSocket.OPEN) {
+              targetClient.ws.send(JSON.stringify({
+                type: 'delete_chat',
+                from: clientId,
+              }));
+              console.log(`Delete chat request from ${clientId} to ${targetId}`);
+            }
+            break;
+          }
         }
       } catch (error) {
         console.error('WebSocket message error:', error);

@@ -13,7 +13,9 @@ export interface Message {
   content: string;
   timestamp: number;
   isSent: boolean;
-  status: 'sending' | 'sent' | 'delivered' | 'failed';
+  status: 'sending' | 'sent' | 'delivered' | 'read' | 'failed';
+  readAt?: number;
+  autoDeleteAt?: number;
 }
 
 export interface Chat {
@@ -29,4 +31,11 @@ export interface UserProfile {
   id: string;
   name: string;
   avatarIndex: number;
+}
+
+export interface AppSettings {
+  autoDeleteEnabled: boolean;
+  autoDeleteTimer: 10 | 30;
+  notificationsEnabled: boolean;
+  autoConnect: boolean;
 }

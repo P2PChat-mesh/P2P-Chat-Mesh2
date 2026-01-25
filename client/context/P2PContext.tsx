@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useState, useEffect, useCallback, useRef, useMemo } from 'react';
 import * as Haptics from 'expo-haptics';
-import type { Peer, Chat, Message, UserProfile } from '@/types';
+import type { Peer, Chat, Message, UserProfile, AppSettings } from '@/types';
 import { 
   getUserProfile, 
   saveUserProfile, 
@@ -11,7 +11,12 @@ import {
   markChatAsRead,
   deleteChat as deleteStoredChat,
   generateId,
-  generateDeviceId 
+  generateDeviceId,
+  getSettings,
+  saveSettings,
+  markMessagesAsRead,
+  scheduleAutoDelete,
+  deleteExpiredMessages
 } from '@/lib/storage';
 import { getApiUrl } from '@/lib/query-client';
 
@@ -19,35 +24,48 @@ interface P2PContextType {
   profile: UserProfile | null;
   peers: Peer[];
   chats: Chat[];
+  settings: AppSettings;
   isScanning: boolean;
   isConnected: boolean;
   updateProfile: (name: string, avatarIndex: number) => Promise<void>;
+  updateSettings: (settings: Partial<AppSettings>) => Promise<void>;
   startScanning: () => void;
   stopScanning: () => void;
   connectToPeer: (peer: Peer) => Promise<void>;
   sendMessage: (peerId: string, content: string) => Promise<void>;
   markAsRead: (peerId: string) => Promise<void>;
-  deleteChat: (peerId: string) => Promise<void>;
+  deleteChat: (peerId: string, notifyPeer?: boolean) => Promise<void>;
   refreshChats: () => Promise<void>;
 }
 
 const P2PContext = createContext<P2PContextType | null>(null);
 
+const DEFAULT_SETTINGS: AppSettings = {
+  autoDeleteEnabled: false,
+  autoDeleteTimer: 10,
+  notificationsEnabled: true,
+  autoConnect: true,
+};
+
 export function P2PProvider({ children }: { children: React.ReactNode }) {
   const [profile, setProfile] = useState<UserProfile | null>(null);
   const [peers, setPeers] = useState<Peer[]>([]);
   const [chats, setChats] = useState<Chat[]>([]);
+  const [settings, setSettings] = useState<AppSettings>(DEFAULT_SETTINGS);
   const [isScanning, setIsScanning] = useState(false);
   const [isConnected, setIsConnected] = useState(false);
   const wsRef = useRef<WebSocket | null>(null);
   const reconnectTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const autoDeleteIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const profileRef = useRef<UserProfile | null>(null);
   const peersRef = useRef<Peer[]>([]);
   const chatsRef = useRef<Chat[]>([]);
+  const settingsRef = useRef<AppSettings>(DEFAULT_SETTINGS);
 
   profileRef.current = profile;
   peersRef.current = peers;
   chatsRef.current = chats;
+  settingsRef.current = settings;
 
   const connectWebSocket = useCallback(() => {
     if (wsRef.current?.readyState === WebSocket.OPEN) return;
@@ -109,6 +127,37 @@ export function P2PProvider({ children }: { children: React.ReactNode }) {
                 c.peerId === data.peerId ? { ...c, isOnline: false } : c
               ));
               break;
+            case 'messages_read':
+              const senderId = data.from;
+              const readMessageIds = data.messageIds || [];
+              const autoDeleteAt = data.autoDeleteAt;
+              
+              setChats(prev => prev.map(chat => {
+                if (chat.peerId === senderId) {
+                  return {
+                    ...chat,
+                    messages: chat.messages.map(m => {
+                      if (m.isSent && readMessageIds.includes(m.id)) {
+                        return { 
+                          ...m, 
+                          status: 'read' as const, 
+                          readAt: Date.now(),
+                          autoDeleteAt: autoDeleteAt || undefined
+                        };
+                      }
+                      return m;
+                    }),
+                  };
+                }
+                return chat;
+              }));
+              break;
+            case 'delete_chat':
+              const fromPeerId = data.from;
+              const deletedChats = await deleteStoredChat(fromPeerId);
+              setChats(deletedChats);
+              Haptics.notificationAsync(Haptics.NotificationFeedbackType.Warning);
+              break;
           }
         } catch (e) {
           console.error('WebSocket message error:', e);
@@ -147,8 +196,22 @@ export function P2PProvider({ children }: { children: React.ReactNode }) {
       
       const storedChats = await getChats();
       setChats(storedChats);
+      
+      const storedSettings = await getSettings();
+      setSettings(storedSettings);
     };
     init();
+    
+    autoDeleteIntervalRef.current = setInterval(async () => {
+      const updatedChats = await deleteExpiredMessages();
+      setChats(updatedChats);
+    }, 30000);
+    
+    return () => {
+      if (autoDeleteIntervalRef.current) {
+        clearInterval(autoDeleteIntervalRef.current);
+      }
+    };
   }, []);
 
   useEffect(() => {
@@ -234,14 +297,45 @@ export function P2PProvider({ children }: { children: React.ReactNode }) {
     setChats(finalChats);
   }, []);
 
-  const markAsRead = useCallback(async (peerId: string) => {
-    await markChatAsRead(peerId);
-    setChats(prev => prev.map(c =>
-      c.peerId === peerId ? { ...c, unreadCount: 0 } : c
-    ));
+  const updateSettings = useCallback(async (newSettings: Partial<AppSettings>) => {
+    const currentSettings = settingsRef.current;
+    const updated = { ...currentSettings, ...newSettings };
+    await saveSettings(updated);
+    setSettings(updated);
   }, []);
 
-  const deleteChatHandler = useCallback(async (peerId: string) => {
+  const markAsRead = useCallback(async (peerId: string) => {
+    const currentSettings = settingsRef.current;
+    const { chats: updatedChats, messageIds } = await markMessagesAsRead(peerId);
+    setChats(updatedChats);
+    
+    if (messageIds.length > 0 && wsRef.current?.readyState === WebSocket.OPEN) {
+      const autoDeleteAt = currentSettings.autoDeleteEnabled 
+        ? Date.now() + (currentSettings.autoDeleteTimer * 60 * 1000) 
+        : undefined;
+      
+      wsRef.current.send(JSON.stringify({
+        type: 'messages_read',
+        to: peerId,
+        messageIds,
+        autoDeleteAt,
+      }));
+      
+      if (currentSettings.autoDeleteEnabled) {
+        const scheduled = await scheduleAutoDelete(peerId, messageIds, currentSettings.autoDeleteTimer);
+        setChats(scheduled);
+      }
+    }
+  }, []);
+
+  const deleteChatHandler = useCallback(async (peerId: string, notifyPeer: boolean = true) => {
+    if (notifyPeer && wsRef.current?.readyState === WebSocket.OPEN) {
+      wsRef.current.send(JSON.stringify({
+        type: 'delete_chat',
+        to: peerId,
+      }));
+    }
+    
     const updated = await deleteStoredChat(peerId);
     setChats(updated);
     Haptics.notificationAsync(Haptics.NotificationFeedbackType.Warning);
@@ -256,9 +350,11 @@ export function P2PProvider({ children }: { children: React.ReactNode }) {
     profile,
     peers,
     chats,
+    settings,
     isScanning,
     isConnected,
     updateProfile,
+    updateSettings,
     startScanning,
     stopScanning,
     connectToPeer,
@@ -270,9 +366,11 @@ export function P2PProvider({ children }: { children: React.ReactNode }) {
     profile,
     peers,
     chats,
+    settings,
     isScanning,
     isConnected,
     updateProfile,
+    updateSettings,
     startScanning,
     stopScanning,
     connectToPeer,
