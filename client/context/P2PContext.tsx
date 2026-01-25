@@ -73,8 +73,9 @@ export function P2PProvider({ children }: { children: React.ReactNode }) {
 
     try {
       const baseUrl = getApiUrl();
-      const wsUrl = baseUrl.replace('https://', 'wss://').replace('http://', 'ws://');
-      const ws = new WebSocket(`${wsUrl}ws`);
+      const wsBase = baseUrl.replace('https://', 'wss://').replace('http://', 'ws://');
+      const wsUrl = wsBase.endsWith('/') ? `${wsBase}ws` : `${wsBase}/ws`;
+      const ws = new WebSocket(wsUrl);
 
       ws.onopen = () => {
         setIsConnected(true);

@@ -8,12 +8,12 @@ export function getApiUrl(): string {
   let host = process.env.EXPO_PUBLIC_DOMAIN;
 
   if (!host) {
-    throw new Error("EXPO_PUBLIC_DOMAIN is not set");
+    // Fallback for development if needed, but in production/deployment 
+    // it should be provided by the environment
+    return `https://${process.env.REPLIT_DEV_DOMAIN}`;
   }
 
-  let url = new URL(`https://p-2-p-whisper--carlovandenbor.replit.app`);
-
-  return url.href;
+  return `https://${host}`;
 }
 
 async function throwIfResNotOk(res: Response) {
