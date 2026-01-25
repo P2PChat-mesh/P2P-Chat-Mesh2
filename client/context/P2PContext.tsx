@@ -334,16 +334,31 @@ export function P2PProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   const deleteChatHandler = useCallback(async (peerId: string, notifyPeer: boolean = true) => {
-    if (notifyPeer && wsRef.current?.readyState === WebSocket.OPEN) {
-      wsRef.current.send(JSON.stringify({
-        type: 'delete_chat',
-        to: peerId,
-      }));
+    try {
+      if (notifyPeer && wsRef.current?.readyState === WebSocket.OPEN) {
+        wsRef.current.send(JSON.stringify({
+          type: 'delete_chat',
+          to: peerId,
+        }));
+      }
+      
+      const updated = await deleteStoredChat(peerId);
+      // Ensure we spread into a new array to force React to detect the change
+      setChats([...updated]);
+      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Warning);
+    } catch (error) {
+      console.error('Failed to delete chat:', error);
     }
-    
-    const updated = await deleteStoredChat(peerId);
-    setChats([...updated]); // Create new array reference to trigger state update
-    Haptics.notificationAsync(Haptics.NotificationFeedbackType.Warning);
+  }, []);
+
+  const clearAllData = useCallback(async () => {
+    try {
+      await saveChats([]);
+      setChats([]);
+      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error);
+    } catch (error) {
+      console.error('Failed to clear data:', error);
+    }
   }, []);
 
   const refreshChats = useCallback(async () => {

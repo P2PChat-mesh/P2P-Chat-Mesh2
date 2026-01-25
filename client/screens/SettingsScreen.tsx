@@ -12,13 +12,14 @@ import { Button } from '@/components/Button';
 import { useTheme } from '@/hooks/useTheme';
 import { useP2P } from '@/context/P2PContext';
 import { Spacing, BorderRadius } from '@/constants/theme';
+import { Alert } from 'react-native';
 
 export default function SettingsScreen() {
   const insets = useSafeAreaInsets();
   const headerHeight = useHeaderHeight();
   const tabBarHeight = useBottomTabBarHeight();
   const { theme } = useTheme();
-  const { profile, updateProfile, settings, updateSettings, isConnected } = useP2P();
+  const { profile, updateProfile, settings, updateSettings, isConnected, clearAllData } = useP2P();
 
   const [displayName, setDisplayName] = useState(profile?.name || '');
 
@@ -260,6 +261,32 @@ export default function SettingsScreen() {
             </View>
           </View>
         </View>
+      </View>
+
+      <View style={[styles.section, { backgroundColor: theme.backgroundDefault }]}>
+        <ThemedText type="small" style={[styles.sectionLabel, { color: theme.error }]}>
+          DANGER ZONE
+        </ThemedText>
+        
+        <Button 
+          onPress={() => {
+            Alert.alert(
+              'Clear All Data',
+              'This will permanently delete ALL conversations and messages. This cannot be undone.',
+              [
+                { text: 'Cancel', style: 'cancel' },
+                { 
+                  text: 'Clear Everything', 
+                  style: 'destructive',
+                  onPress: clearAllData
+                }
+              ]
+            );
+          }} 
+          style={{ backgroundColor: 'transparent', borderWidth: 1, borderColor: theme.error }}
+        >
+          <ThemedText style={{ color: theme.error, fontWeight: '600' }}>Clear All Conversations</ThemedText>
+        </Button>
       </View>
 
       <View style={styles.footer}>
