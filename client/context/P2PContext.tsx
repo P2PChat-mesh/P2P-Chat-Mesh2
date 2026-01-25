@@ -205,8 +205,12 @@ export function P2PProvider({ children }: { children: React.ReactNode }) {
     
     autoDeleteIntervalRef.current = setInterval(async () => {
       const updatedChats = await deleteExpiredMessages();
-      setChats(updatedChats);
-    }, 30000);
+      // Only update state if something actually changed to avoid unnecessary re-renders
+      setChats(prev => {
+        const hasChanged = JSON.stringify(prev) !== JSON.stringify(updatedChats);
+        return hasChanged ? updatedChats : prev;
+      });
+    }, 5000); // Check every 5 seconds instead of 30 for better responsiveness
     
     return () => {
       if (autoDeleteIntervalRef.current) {

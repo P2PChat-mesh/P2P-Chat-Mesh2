@@ -161,17 +161,25 @@ export async function deleteExpiredMessages(): Promise<Chat[]> {
   const now = Date.now();
   let changed = false;
   
-  chats.forEach(chat => {
+  const updatedChats = chats.map(chat => {
     const originalLength = chat.messages.length;
-    chat.messages = chat.messages.filter(m => !m.autoDeleteAt || m.autoDeleteAt > now);
-    if (chat.messages.length !== originalLength) {
+    // Filter out messages that have an autoDeleteAt timestamp in the past
+    const filteredMessages = chat.messages.filter(m => !m.autoDeleteAt || m.autoDeleteAt > now);
+    
+    if (filteredMessages.length !== originalLength) {
       changed = true;
-      chat.lastMessage = chat.messages[chat.messages.length - 1];
+      return {
+        ...chat,
+        messages: filteredMessages,
+        lastMessage: filteredMessages.length > 0 ? filteredMessages[filteredMessages.length - 1] : chat.lastMessage,
+      };
     }
+    return chat;
   });
   
   if (changed) {
-    await saveChats(chats);
+    await saveChats(updatedChats);
+    return updatedChats;
   }
   
   return chats;
