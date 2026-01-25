@@ -16,13 +16,8 @@ export function getApiUrl(): string {
     return `https://${host}`;
   }
 
-  // Fallback to Replit's dev domain if available
-  if (process.env.REPLIT_DEV_DOMAIN) {
-    return `https://${process.env.REPLIT_DEV_DOMAIN}`;
-  }
-
-  // Final fallback (should ideally not be reached if env vars are set)
-  return 'http://localhost:5000';
+  // Use the specific Replit server provided by the user
+  return 'https://p-2-p-whisper--carlovandenbor2.replit.app';
 }
 
 async function throwIfResNotOk(res: Response) {
