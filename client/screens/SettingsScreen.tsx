@@ -18,11 +18,9 @@ export default function SettingsScreen() {
   const headerHeight = useHeaderHeight();
   const tabBarHeight = useBottomTabBarHeight();
   const { theme } = useTheme();
-  const { profile, updateProfile, isConnected } = useP2P();
+  const { profile, updateProfile, settings, updateSettings, isConnected } = useP2P();
 
   const [displayName, setDisplayName] = useState(profile?.name || '');
-  const [notificationsEnabled, setNotificationsEnabled] = useState(true);
-  const [autoConnect, setAutoConnect] = useState(true);
 
   useEffect(() => {
     if (profile) {
@@ -37,14 +35,24 @@ export default function SettingsScreen() {
     }
   };
 
-  const handleToggleNotifications = (value: boolean) => {
+  const handleToggleAutoDelete = async (value: boolean) => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-    setNotificationsEnabled(value);
+    await updateSettings({ autoDeleteEnabled: value });
   };
 
-  const handleToggleAutoConnect = (value: boolean) => {
+  const handleTimerChange = async (timer: 10 | 30) => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-    setAutoConnect(value);
+    await updateSettings({ autoDeleteTimer: timer });
+  };
+
+  const handleToggleNotifications = async (value: boolean) => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    await updateSettings({ notificationsEnabled: value });
+  };
+
+  const handleToggleAutoConnect = async (value: boolean) => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    await updateSettings({ autoConnect: value });
   };
 
   return (
@@ -104,6 +112,84 @@ export default function SettingsScreen() {
 
       <View style={[styles.section, { backgroundColor: theme.backgroundDefault }]}>
         <ThemedText type="small" style={[styles.sectionLabel, { color: theme.textSecondary }]}>
+          MESSAGE PRIVACY
+        </ThemedText>
+        
+        <View style={styles.settingRow}>
+          <View style={styles.settingInfo}>
+            <Feather name="clock" size={18} color={theme.primary} />
+            <View style={styles.settingTextContainer}>
+              <ThemedText type="body" style={styles.settingLabel}>Auto-delete after seen</ThemedText>
+              <ThemedText type="small" style={{ color: theme.textSecondary }}>
+                Messages delete after receiver views them
+              </ThemedText>
+            </View>
+          </View>
+          <Switch
+            value={settings.autoDeleteEnabled}
+            onValueChange={handleToggleAutoDelete}
+            trackColor={{ false: theme.backgroundSecondary, true: theme.primary }}
+            thumbColor="#FFFFFF"
+            testID="auto-delete-toggle"
+          />
+        </View>
+        
+        {settings.autoDeleteEnabled ? (
+          <>
+            <View style={[styles.divider, { backgroundColor: theme.border }]} />
+            <ThemedText type="small" style={[styles.inputLabel, { color: theme.textSecondary }]}>
+              Delete Timer
+            </ThemedText>
+            <View style={styles.timerButtons}>
+              <Pressable
+                style={[
+                  styles.timerButton,
+                  {
+                    backgroundColor: settings.autoDeleteTimer === 10 ? theme.primary : theme.backgroundSecondary,
+                    borderColor: theme.primary,
+                  },
+                ]}
+                onPress={() => handleTimerChange(10)}
+                testID="timer-10-button"
+              >
+                <ThemedText
+                  type="body"
+                  style={{
+                    color: settings.autoDeleteTimer === 10 ? theme.buttonText : theme.text,
+                    fontWeight: '600',
+                  }}
+                >
+                  10 min
+                </ThemedText>
+              </Pressable>
+              <Pressable
+                style={[
+                  styles.timerButton,
+                  {
+                    backgroundColor: settings.autoDeleteTimer === 30 ? theme.primary : theme.backgroundSecondary,
+                    borderColor: theme.primary,
+                  },
+                ]}
+                onPress={() => handleTimerChange(30)}
+                testID="timer-30-button"
+              >
+                <ThemedText
+                  type="body"
+                  style={{
+                    color: settings.autoDeleteTimer === 30 ? theme.buttonText : theme.text,
+                    fontWeight: '600',
+                  }}
+                >
+                  30 min
+                </ThemedText>
+              </Pressable>
+            </View>
+          </>
+        ) : null}
+      </View>
+
+      <View style={[styles.section, { backgroundColor: theme.backgroundDefault }]}>
+        <ThemedText type="small" style={[styles.sectionLabel, { color: theme.textSecondary }]}>
           PREFERENCES
         </ThemedText>
         
@@ -113,7 +199,7 @@ export default function SettingsScreen() {
             <ThemedText type="body" style={styles.settingLabel}>Notifications</ThemedText>
           </View>
           <Switch
-            value={notificationsEnabled}
+            value={settings.notificationsEnabled}
             onValueChange={handleToggleNotifications}
             trackColor={{ false: theme.backgroundSecondary, true: theme.primary }}
             thumbColor="#FFFFFF"
@@ -129,7 +215,7 @@ export default function SettingsScreen() {
             <ThemedText type="body" style={styles.settingLabel}>Auto-connect to known peers</ThemedText>
           </View>
           <Switch
-            value={autoConnect}
+            value={settings.autoConnect}
             onValueChange={handleToggleAutoConnect}
             trackColor={{ false: theme.backgroundSecondary, true: theme.primary }}
             thumbColor="#FFFFFF"
@@ -257,6 +343,22 @@ const styles = StyleSheet.create({
   },
   settingLabel: {
     marginLeft: Spacing.md,
+  },
+  settingTextContainer: {
+    marginLeft: Spacing.md,
+    flex: 1,
+  },
+  timerButtons: {
+    flexDirection: 'row',
+    gap: Spacing.md,
+  },
+  timerButton: {
+    flex: 1,
+    height: 44,
+    borderRadius: BorderRadius.xs,
+    borderWidth: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   aboutContent: {},
   aboutHeader: {
