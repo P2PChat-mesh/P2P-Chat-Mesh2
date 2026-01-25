@@ -342,7 +342,7 @@ export function P2PProvider({ children }: { children: React.ReactNode }) {
     }
     
     const updated = await deleteStoredChat(peerId);
-    setChats(updated);
+    setChats([...updated]); // Create new array reference to trigger state update
     Haptics.notificationAsync(Haptics.NotificationFeedbackType.Warning);
   }, []);
 
