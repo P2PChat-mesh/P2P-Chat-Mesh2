@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useState, useEffect, useCallback, useRef, useMemo } from 'react';
+import { Platform } from 'react-native';
 import * as Haptics from 'expo-haptics';
 import type { Peer, Chat, Message, UserProfile, AppSettings } from '@/types';
 import { 
@@ -343,8 +344,15 @@ export function P2PProvider({ children }: { children: React.ReactNode }) {
       }
       
       const updated = await deleteStoredChat(peerId);
-      // Ensure we spread into a new array to force React to detect the change
+      // Ensure we spread into a new array to force React to detect the change across all platforms
       setChats([...updated]);
+      
+      // Additional check for web to ensure state is absolutely fresh
+      if (Platform.OS === 'web') {
+        const freshChats = await getChats();
+        setChats([...freshChats]);
+      }
+      
       Haptics.notificationAsync(Haptics.NotificationFeedbackType.Warning);
     } catch (error) {
       console.error('Failed to delete chat:', error);
