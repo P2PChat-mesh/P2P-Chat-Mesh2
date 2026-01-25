@@ -5,15 +5,24 @@ import { QueryClient, QueryFunction } from "@tanstack/react-query";
  * @returns {string} The API base URL
  */
 export function getApiUrl(): string {
+  // Use the domain provided at build time (e.g. for Expo/TestFlight/Production)
   let host = process.env.EXPO_PUBLIC_DOMAIN;
 
-  if (!host) {
-    // Fallback for development if needed, but in production/deployment 
-    // it should be provided by the environment
+  if (host) {
+    // Ensure we have a protocol and handle cases where it might just be the hostname
+    if (host.startsWith('http://') || host.startsWith('https://')) {
+      return host;
+    }
+    return `https://${host}`;
+  }
+
+  // Fallback to Replit's dev domain if available
+  if (process.env.REPLIT_DEV_DOMAIN) {
     return `https://${process.env.REPLIT_DEV_DOMAIN}`;
   }
 
-  return `https://${host}`;
+  // Final fallback (should ideally not be reached if env vars are set)
+  return 'http://localhost:5000';
 }
 
 async function throwIfResNotOk(res: Response) {
