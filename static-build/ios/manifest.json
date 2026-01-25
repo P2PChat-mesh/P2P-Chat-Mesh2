@@ -1,11 +1,11 @@
 {
-  "id": "010a0278-813e-45b3-8679-65a35bf75040",
-  "createdAt": "2026-01-24T21:35:32.840Z",
+  "id": "da0fd34d-9349-4f96-bb3d-53134022ed24",
+  "createdAt": "2026-01-25T12:15:23.713Z",
   "runtimeVersion": "exposdk:54.0.0",
   "launchAsset": {
-    "key": "bundle-1769290532840-2605",
+    "key": "bundle-1769343323713-671",
     "contentType": "application/javascript",
-    "url": "https://165be3e6-bbbd-4fa5-b16e-e99043c9c277-00-23dgf717xpj2h.kirk.replit.dev/1769290532840-2605/_expo/static/js/ios/bundle.js"
+    "url": "https://165be3e6-bbbd-4fa5-b16e-e99043c9c277-00-23dgf717xpj2h.kirk.replit.dev/1769343323713-671/_expo/static/js/ios/bundle.js"
   },
   "assets": [],
   "metadata": {},
@@ -96,6 +96,6 @@
       },
       "mainModuleName": "client/index"
     },
-    "scopeKey": "@anonymous/meshchat-0784490e-f86f-4b1d-8b58-beb23e60ce0f"
+    "scopeKey": "@anonymous/meshchat-93b629b0-8d77-4b35-99d9-55c95e81ef99"
   }
 }

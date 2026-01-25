@@ -74,6 +74,22 @@ export async function deleteChat(peerId: string): Promise<Chat[]> {
   return filtered;
 }
 
+export async function updateMessageStatus(peerId: string, messageId: string, status: Message['status']): Promise<Chat[]> {
+  const chats = await getChats();
+  const chat = chats.find(c => c.peerId === peerId);
+  if (chat) {
+    const message = chat.messages.find(m => m.id === messageId);
+    if (message) {
+      message.status = status;
+      if (chat.lastMessage?.id === messageId) {
+        chat.lastMessage.status = status;
+      }
+      await saveChats(chats);
+    }
+  }
+  return chats;
+}
+
 export function generateId(): string {
   return `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
 }

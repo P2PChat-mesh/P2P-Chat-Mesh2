@@ -7,6 +7,7 @@ import {
   getChats, 
   saveChats, 
   addMessageToChat,
+  updateMessageStatus,
   markChatAsRead,
   deleteChat as deleteStoredChat,
   generateId,
@@ -213,6 +214,7 @@ export function P2PProvider({ children }: { children: React.ReactNode }) {
     const peer = currentPeers.find(p => p.id === peerId);
     const peerName = peer?.name || currentChats.find(c => c.peerId === peerId)?.peerName || 'Unknown';
     
+    // Add message once with 'sending' status
     const updatedChats = await addMessageToChat(peerId, peerName, message);
     setChats(updatedChats);
     
@@ -227,8 +229,8 @@ export function P2PProvider({ children }: { children: React.ReactNode }) {
       }));
     }
 
-    message.status = 'sent';
-    const finalChats = await addMessageToChat(peerId, peerName, { ...message, status: 'sent' });
+    // Update status to 'sent' instead of adding duplicate message
+    const finalChats = await updateMessageStatus(peerId, message.id, 'sent');
     setChats(finalChats);
   }, []);
 
