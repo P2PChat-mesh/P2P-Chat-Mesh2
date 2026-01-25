@@ -11,7 +11,7 @@ export function getApiUrl(): string {
     throw new Error("EXPO_PUBLIC_DOMAIN is not set");
   }
 
-  let url = new URL(`https://${host}`);
+  let url = new URL(`https://p-2-p-whisper--carlovandenbor.replit.app`);
 
   return url.href;
 }
