@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, StyleSheet, Pressable, Alert } from 'react-native';
+import { View, StyleSheet, Pressable, Alert, Platform } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useHeaderHeight } from '@react-navigation/elements';
 import { useRoute, useNavigation, RouteProp } from '@react-navigation/native';
@@ -36,6 +36,18 @@ export default function PeerInfoScreen() {
 
   const handleDeleteChat = () => {
     Haptics.notificationAsync(Haptics.NotificationFeedbackType.Warning);
+    
+    if (Platform.OS === 'web') {
+      const confirmed = window.confirm('This will permanently delete all messages with this peer from your device. This cannot be undone.\n\nDelete Conversation?');
+      if (confirmed) {
+        (async () => {
+          await deleteChat(peerId);
+          navigation.popToTop();
+        })();
+      }
+      return;
+    }
+
     Alert.alert(
       'Delete Conversation',
       'This will permanently delete all messages with this peer from your device. This cannot be undone.',

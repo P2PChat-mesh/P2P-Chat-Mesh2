@@ -12,7 +12,7 @@ import { Button } from '@/components/Button';
 import { useTheme } from '@/hooks/useTheme';
 import { useP2P } from '@/context/P2PContext';
 import { Spacing, BorderRadius } from '@/constants/theme';
-import { Alert } from 'react-native';
+import { Alert, Platform } from 'react-native';
 
 export default function SettingsScreen() {
   const insets = useSafeAreaInsets();
@@ -270,6 +270,14 @@ export default function SettingsScreen() {
         
         <Button 
           onPress={() => {
+            if (Platform.OS === 'web') {
+              const confirmed = window.confirm('This will permanently delete ALL conversations and messages. This cannot be undone.\n\nClear All Data?');
+              if (confirmed) {
+                clearAllData();
+              }
+              return;
+            }
+
             Alert.alert(
               'Clear All Data',
               'This will permanently delete ALL conversations and messages. This cannot be undone.',
